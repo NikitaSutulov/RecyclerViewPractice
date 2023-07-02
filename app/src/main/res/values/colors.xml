@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="gray_background">#343434</color>
+    <color name="black_tool_bar">#151515</color>
+    <color name="dark_gray">#1F1F1F</color>
+    <color name="dark_gray_done">#272727</color>
+    <color name="red_button">#C41414</color>
+    <color name="red_button_done">#AE1515</color>
+    <color name="orange">#F97316</color>
+    <color name="crimson">#970C13</color>
+    <color name="red_cancel">#DC3D43</color>
+    <color name="green_submit">#189550</color>
+</resources>

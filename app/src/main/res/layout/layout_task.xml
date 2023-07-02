@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/task_bg"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/taskNameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/manrope"
+        android:text="Task name"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/taskDescriptionTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/manrope"
+        android:text="@string/lorem_ipsum"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/isTaskDoneCheckBox"
+        app:layout_constraintStart_toStartOf="@+id/taskNameTV"
+        app:layout_constraintTop_toBottomOf="@+id/taskNameTV" />
+
+    <TextView
+        android:id="@+id/taskDeadlineTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/manrope"
+        android:text="Deadline: 19.06.2023"
+        android:textColor="@color/red_button"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/shareTaskButton"
+        app:layout_constraintTop_toBottomOf="@+id/taskDescriptionTV"
+        android:layout_marginTop="10dp"
+        android:gravity="end"/>
+
+
+    <CheckBox
+        android:id="@+id/isTaskDoneCheckBox"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="20dp"
+        android:button="@null"
+        android:background="@drawable/checkbox_selector"
+        app:layout_constraintEnd_toStartOf="@+id/editTaskButton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/editTaskButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@color/transparent"
+        android:src="@drawable/baseline_edit_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/deleteTaskButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/transparent"
+        android:src="@drawable/baseline_delete_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTaskButton" />
+
+    <ImageButton
+        android:id="@+id/shareTaskButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/transparent"
+        android:src="@drawable/baseline_send_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deleteTaskButton" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
