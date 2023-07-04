@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/task_bg"
+    android:layout_marginTop="10dp"
+    android:layout_marginHorizontal="10dp"
     android:padding="20dp">
 
     <TextView
@@ -12,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/manrope"
-        android:text="Task name"
+        tools:text="Task name"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -25,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/manrope"
-        android:text="@string/lorem_ipsum"
+        tools:text="@string/lorem_ipsum"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/isTaskDoneCheckBox"
@@ -36,14 +38,15 @@
         android:id="@+id/taskDeadlineTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/manrope"
-        android:text="Deadline: 19.06.2023"
+        android:gravity="end"
+        tools:text="Deadline: 19.06.2023"
         android:textColor="@color/red_button"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/shareTaskButton"
-        app:layout_constraintTop_toBottomOf="@+id/taskDescriptionTV"
-        android:layout_marginTop="10dp"
-        android:gravity="end"/>
+        app:layout_constraintTop_toBottomOf="@+id/shareTaskButton" />
 
 
     <CheckBox
