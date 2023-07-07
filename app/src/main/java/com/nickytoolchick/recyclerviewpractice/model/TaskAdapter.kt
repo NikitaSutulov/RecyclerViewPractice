@@ -86,7 +86,7 @@ class TaskAdapter(tasks: MutableList<Task>, private val actionListener: TaskActi
         buttonView.isChecked = task.isCompleted
     }
 
-    fun notifyAddedTask() {
+    fun notifyChanges() {
         notifyDataSetChanged()
     }
 }

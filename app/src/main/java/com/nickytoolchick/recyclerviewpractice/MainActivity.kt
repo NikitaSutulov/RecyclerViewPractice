@@ -5,7 +5,10 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nickytoolchick.recyclerviewpractice.databinding.ActivityMainBinding
 import com.nickytoolchick.recyclerviewpractice.model.Task
@@ -41,10 +44,30 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onDeleteTask(task: Task) {
-                tasks.remove(task)
-                // TODO: custom dialog asking if the user really wants to delete the task
-                showToast("Delete task")
+                val dialogLayout = layoutInflater.inflate(R.layout.layout_dialog_delete_task, null)
+                val dialogTextView = dialogLayout.findViewById<TextView>(R.id.text_delete_task)
+                val submitButton = dialogLayout.findViewById<Button>(R.id.submit_button)
+                val cancelButton = dialogLayout.findViewById<Button>(R.id.cancel_button)
+
+                val dialog = AlertDialog.Builder(this@MainActivity)
+                    .setView(dialogLayout)
+                    .create()
+
+                val dialogText = "Do you really want to delete task\n${task.name}?"
+                dialogTextView.text = dialogText
+                submitButton.setOnClickListener {
+                    tasks.remove(task)
+                    showToast("Delete task")
+                    adapter.notifyChanges()
+                    dialog.dismiss()
+                }
+                cancelButton.setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                dialog.show()
             }
+
 
             override fun onShareTask(task: Task) {
                 val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -67,6 +90,9 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
 
         binding.addTaskButton.setOnClickListener {
+
+            // TODO: implement task creation through a dialog
+
             tasks.add(Task(
                 id = Random.nextInt(),
                 name = "Test task",
@@ -75,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 deadline = LocalDateTime.now(),
                 isCompleted = false
             ))
-            adapter.notifyAddedTask()
+            adapter.notifyChanges()
         }
     }
 
