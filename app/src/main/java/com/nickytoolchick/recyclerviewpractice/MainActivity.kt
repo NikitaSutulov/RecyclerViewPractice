@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 submitButton.setOnClickListener {
                     tasks.remove(task)
                     showToast("Delete task")
-                    adapter.notifyChanges()
+                    adapter.notifyDataSetChanged()
                     dialog.dismiss()
                 }
                 cancelButton.setOnClickListener {
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 deadline = LocalDateTime.now(),
                 isCompleted = false
             ))
-            adapter.notifyChanges()
+            adapter.notifyDataSetChanged()
         }
     }
 

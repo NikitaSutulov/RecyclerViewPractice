@@ -78,15 +78,9 @@ class TaskAdapter(tasks: MutableList<Task>, private val actionListener: TaskActi
         }
     }
 
-
-
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         val task = buttonView!!.tag as Task
         actionListener.onCompleteTask(task)
         buttonView.isChecked = task.isCompleted
-    }
-
-    fun notifyChanges() {
-        notifyDataSetChanged()
     }
 }
