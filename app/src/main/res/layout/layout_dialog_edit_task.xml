@@ -9,7 +9,7 @@
     android:background="@color/dark_gray">
 
     <TextView
-        android:id="@+id/dialogTitle"
+        android:id="@+id/dialog_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/manrope"
@@ -23,14 +23,16 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/nameInputLayout"
+        android:id="@+id/name_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dialogTitle">
+        app:layout_constraintTop_toBottomOf="@+id/dialog_title"
+        app:hintTextColor="@color/white">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="title"
@@ -38,15 +40,16 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/descriptionInputLayout"
+        android:id="@+id/description_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/name_input_layout"
         >
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/description_input"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:hint="description"
@@ -55,16 +58,16 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
-        android:id="@+id/hasDeadlineLayout"
+        android:id="@+id/has_deadline_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/description_input_layout"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal"
         android:layout_marginTop="10dp">
 
         <CheckBox
-            android:id="@+id/hasDeadlineCheckBox"
+            android:id="@+id/has_deadline_checkBox"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="10dp"
@@ -72,7 +75,7 @@
             android:background="@drawable/checkbox_selector"/>
 
         <TextView
-            android:id="@+id/hasDeadlineTextView"
+            android:id="@+id/has_deadline_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Task has deadline"
@@ -84,7 +87,7 @@
 
 
     <EditText
-        android:id="@+id/deadlineTextView"
+        android:id="@+id/deadline_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
@@ -93,20 +96,21 @@
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hasDeadlineLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/has_deadline_layout"
+        android:visibility="gone"/>
 
 
     <LinearLayout
-        android:id="@+id/isCompletedLayout"
+        android:id="@+id/is_completed_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/deadlineTextView"
+        app:layout_constraintTop_toBottomOf="@+id/deadline_textView"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal"
         android:layout_marginTop="10dp">
 
         <CheckBox
-            android:id="@+id/isCompletedCheckBox"
+            android:id="@+id/is_completed_checkBox"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="10dp"
@@ -114,7 +118,7 @@
             android:background="@drawable/checkbox_selector"/>
 
         <TextView
-            android:id="@+id/isCompletedTextView"
+            android:id="@+id/is_completed_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Task completed"
@@ -129,7 +133,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/isCompletedLayout"
+        app:layout_constraintTop_toBottomOf="@+id/is_completed_layout"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/red_button"
         android:fontFamily="@font/manrope"
@@ -148,7 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/isCompletedLayout"
+        app:layout_constraintTop_toBottomOf="@+id/is_completed_layout"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/green_submit"
         android:fontFamily="@font/manrope"

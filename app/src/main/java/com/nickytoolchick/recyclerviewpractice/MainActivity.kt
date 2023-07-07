@@ -5,7 +5,10 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -14,33 +17,24 @@ import com.nickytoolchick.recyclerviewpractice.databinding.ActivityMainBinding
 import com.nickytoolchick.recyclerviewpractice.model.Task
 import com.nickytoolchick.recyclerviewpractice.model.TaskAdapter
 import java.time.LocalDateTime
+import java.time.Month
+import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: TaskAdapter
+    private val tasks = mutableListOf<Task>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val tasks = mutableListOf(
-            Task(
-                id = 1,
-                name = "Clean the room",
-                description = "Make the room clean, take out the rubbish",
-                hasDeadline = true,
-                deadline = LocalDateTime.now(),
-                isCompleted = false
-            )
-        )
-
         val actionListener = object : TaskActionListener {
             override fun onEditTask(task: Task) {
-                showToast("Edit task")
-                // TODO: custom dialog where the task data can be edited
+                createOrEditTask(task)
             }
 
             override fun onDeleteTask(task: Task) {
@@ -64,10 +58,8 @@ class MainActivity : AppCompatActivity() {
                 cancelButton.setOnClickListener {
                     dialog.dismiss()
                 }
-
                 dialog.show()
             }
-
 
             override fun onShareTask(task: Task) {
                 val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -91,21 +83,95 @@ class MainActivity : AppCompatActivity() {
 
         binding.addTaskButton.setOnClickListener {
 
-            // TODO: implement task creation through a dialog
-
-            tasks.add(Task(
-                id = Random.nextInt(),
-                name = "Test task",
-                description = "Something has to be done",
-                hasDeadline = true,
-                deadline = LocalDateTime.now(),
-                isCompleted = false
-            ))
-            adapter.notifyDataSetChanged()
+            createOrEditTask(null)
         }
     }
 
     private fun showToast(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    }
+
+    // TODO: decompose this creepy bunch of code
+    private fun createOrEditTask(task: Task?) {
+        val dialogLayout = layoutInflater.inflate(R.layout.layout_dialog_edit_task, null)
+        val dialogTextView = dialogLayout.findViewById<TextView>(R.id.dialog_title)
+        val submitButton = dialogLayout.findViewById<Button>(R.id.submit_button)
+        val cancelButton = dialogLayout.findViewById<Button>(R.id.cancel_button)
+        val nameInput = dialogLayout.findViewById<EditText>(R.id.name_input)
+        val descriptionInput = dialogLayout.findViewById<EditText>(R.id.description_input)
+        val hasDeadlineCheckBox = dialogLayout.findViewById<CheckBox>(R.id.has_deadline_checkBox)
+        val deadlineEditText = dialogLayout.findViewById<EditText>(R.id.deadline_textView)
+        val isCompletedCheckBox = dialogLayout.findViewById<CheckBox>(R.id.is_completed_checkBox)
+
+        val isTaskNull = task == null
+
+        if (!isTaskNull) {
+            nameInput.setText(task!!.name)
+            descriptionInput.setText(task.description)
+            hasDeadlineCheckBox.isChecked = task.hasDeadline
+            deadlineEditText.visibility = if (task.hasDeadline) View.VISIBLE else View.GONE
+            if (task.hasDeadline) {
+                deadlineEditText.visibility = View.VISIBLE
+                deadlineEditText.setText(task.deadline!!.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+            } else {
+                deadlineEditText.visibility = View.GONE
+            }
+            isCompletedCheckBox.isChecked = task.isCompleted
+        }
+
+        hasDeadlineCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            deadlineEditText.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+
+        val dialog = AlertDialog.Builder(this@MainActivity)
+            .setView(dialogLayout)
+            .create()
+
+        val dialogText = if (isTaskNull) "Create new task" else "Edit task ${task!!.name}"
+        dialogTextView.text = dialogText
+
+        // TODO: data validation
+
+        submitButton.setOnClickListener {
+
+            var deadline: LocalDateTime? = null
+            if (hasDeadlineCheckBox.isChecked) {
+                val splitDate = deadlineEditText.text.toString().split(".")
+                val parsedDate = object {
+                    val day = splitDate[0].toInt()
+                    val month = splitDate[1].toInt()
+                    val year = splitDate[2].toInt()
+                }
+                deadline = LocalDateTime.of(parsedDate.year, Month.of(parsedDate.month), parsedDate.day, 0, 0)
+            }
+
+
+            val newTask = Task(
+                id = Random.nextInt(),
+                name = nameInput.text.toString(),
+                description = descriptionInput.text.toString(),
+                hasDeadline = hasDeadlineCheckBox.isChecked,
+                deadline = deadline,
+                isCompleted = isCompletedCheckBox.isChecked
+            )
+
+            if (isTaskNull) {
+                tasks.add(newTask)
+                adapter.notifyDataSetChanged()
+                showToast("Add task")
+            } else {
+                val taskIndex = tasks.indexOf(task)
+                tasks[taskIndex] = newTask
+                adapter.notifyDataSetChanged()
+                showToast("Edit task")
+            }
+
+            // TODO: do something to display the isCompleted checkBox state according to the state received from edit dialog immediately
+            dialog.dismiss()
+        }
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 }

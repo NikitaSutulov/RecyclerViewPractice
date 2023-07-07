@@ -68,8 +68,6 @@ class TaskAdapter(tasks: MutableList<Task>, private val actionListener: TaskActi
                 }
                 R.id.deleteTaskButton -> {
                     actionListener.onDeleteTask(it)
-//                    _tasks.remove(it)
-                    notifyDataSetChanged()
                 }
                 R.id.shareTaskButton -> {
                     actionListener.onShareTask(it)
