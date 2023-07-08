@@ -91,7 +91,8 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
-    // TODO: decompose this creepy bunch of code
+    // TODO: data validation
+    // TODO: do something to display the isCompleted checkBox state according to the state received from edit dialog immediately
     private fun createOrEditTask(task: Task?) {
         val dialogLayout = layoutInflater.inflate(R.layout.layout_dialog_edit_task, null)
         val dialogTextView = dialogLayout.findViewById<TextView>(R.id.dialog_title)
@@ -106,72 +107,118 @@ class MainActivity : AppCompatActivity() {
         val isTaskNull = task == null
 
         if (!isTaskNull) {
-            nameInput.setText(task!!.name)
-            descriptionInput.setText(task.description)
-            hasDeadlineCheckBox.isChecked = task.hasDeadline
-            deadlineEditText.visibility = if (task.hasDeadline) View.VISIBLE else View.GONE
-            if (task.hasDeadline) {
-                deadlineEditText.visibility = View.VISIBLE
-                deadlineEditText.setText(task.deadline!!.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-            } else {
-                deadlineEditText.visibility = View.GONE
-            }
-            isCompletedCheckBox.isChecked = task.isCompleted
+            populateViews(task!!, nameInput, descriptionInput, hasDeadlineCheckBox, deadlineEditText, isCompletedCheckBox)
         }
 
-        hasDeadlineCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
-            deadlineEditText.visibility = if (isChecked) View.VISIBLE else View.GONE
-        }
+        setDeadlineCheckBoxListener(hasDeadlineCheckBox, deadlineEditText)
 
-        val dialog = AlertDialog.Builder(this@MainActivity)
-            .setView(dialogLayout)
-            .create()
-
-        val dialogText = if (isTaskNull) "Create new task" else "Edit task ${task!!.name}"
-        dialogTextView.text = dialogText
-
-        // TODO: data validation
+        val dialog = createAlertDialog(dialogLayout)
+        setDialogTitle(dialogTextView, isTaskNull, task)
 
         submitButton.setOnClickListener {
-
-            var deadline: LocalDateTime? = null
-            if (hasDeadlineCheckBox.isChecked) {
-                val splitDate = deadlineEditText.text.toString().split(".")
-                val parsedDate = object {
-                    val day = splitDate[0].toInt()
-                    val month = splitDate[1].toInt()
-                    val year = splitDate[2].toInt()
-                }
-                deadline = LocalDateTime.of(parsedDate.year, Month.of(parsedDate.month), parsedDate.day, 0, 0)
-            }
-
-
-            val newTask = Task(
-                id = Random.nextInt(),
-                name = nameInput.text.toString(),
-                description = descriptionInput.text.toString(),
-                hasDeadline = hasDeadlineCheckBox.isChecked,
-                deadline = deadline,
-                isCompleted = isCompletedCheckBox.isChecked
-            )
+            val newTask = createNewTask(task, nameInput, descriptionInput, hasDeadlineCheckBox, deadlineEditText, isCompletedCheckBox)
 
             if (isTaskNull) {
-                tasks.add(newTask)
-                adapter.notifyDataSetChanged()
-                showToast("Add task")
+                addTask(newTask)
             } else {
-                val taskIndex = tasks.indexOf(task)
-                tasks[taskIndex] = newTask
-                adapter.notifyDataSetChanged()
-                showToast("Edit task")
+                editTask(newTask, task!!)
             }
 
-            // TODO: do something to display the isCompleted checkBox state according to the state received from edit dialog immediately
             dialog.dismiss()
         }
+
         cancelButton.setOnClickListener {
             dialog.dismiss()
         }
+
         dialog.show()
     }
+
+    private fun populateViews(
+        task: Task,
+        nameInput: EditText,
+        descriptionInput: EditText,
+        hasDeadlineCheckBox: CheckBox,
+        deadlineEditText: EditText,
+        isCompletedCheckBox: CheckBox
+    ) {
+        nameInput.setText(task.name)
+        descriptionInput.setText(task.description)
+        hasDeadlineCheckBox.isChecked = task.hasDeadline
+        deadlineEditText.visibility = if (task.hasDeadline) View.VISIBLE else View.GONE
+        if (task.hasDeadline) {
+            deadlineEditText.visibility = View.VISIBLE
+            deadlineEditText.setText(task.deadline!!.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+        } else {
+            deadlineEditText.visibility = View.GONE
+        }
+        isCompletedCheckBox.isChecked = task.isCompleted
+    }
+
+    private fun setDeadlineCheckBoxListener(
+        hasDeadlineCheckBox: CheckBox,
+        deadlineEditText: EditText
+    ) {
+        hasDeadlineCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            deadlineEditText.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun createAlertDialog(dialogLayout: View): AlertDialog {
+        return AlertDialog.Builder(this@MainActivity)
+            .setView(dialogLayout)
+            .create()
+    }
+
+    private fun setDialogTitle(
+        dialogTextView: TextView,
+        isTaskNull: Boolean,
+        task: Task?
+    ) {
+        val dialogText = if (isTaskNull) "Create new task" else "Edit task ${task!!.name}"
+        dialogTextView.text = dialogText
+    }
+
+    private fun createNewTask(
+        task: Task?,
+        nameInput: EditText,
+        descriptionInput: EditText,
+        hasDeadlineCheckBox: CheckBox,
+        deadlineEditText: EditText,
+        isCompletedCheckBox: CheckBox
+    ): Task {
+        var deadline: LocalDateTime? = null
+        if (hasDeadlineCheckBox.isChecked) {
+            val splitDate = deadlineEditText.text.toString().split(".")
+            val parsedDate = object {
+                val day = splitDate[0].toInt()
+                val month = splitDate[1].toInt()
+                val year = splitDate[2].toInt()
+            }
+            deadline = LocalDateTime.of(parsedDate.year, Month.of(parsedDate.month), parsedDate.day, 0, 0)
+        }
+
+        return Task(
+            id = Random.nextInt(),
+            name = nameInput.text.toString(),
+            description = descriptionInput.text.toString(),
+            hasDeadline = hasDeadlineCheckBox.isChecked,
+            deadline = deadline,
+            isCompleted = isCompletedCheckBox.isChecked
+        )
+    }
+
+    private fun addTask(newTask: Task) {
+        tasks.add(newTask)
+        adapter.notifyDataSetChanged()
+        showToast("Add task")
+    }
+
+    private fun editTask(newTask: Task, task: Task) {
+        val taskIndex = tasks.indexOf(task)
+        tasks[taskIndex] = newTask
+        adapter.notifyDataSetChanged()
+        showToast("Edit task")
+    }
+
 }
