@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -70,8 +71,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onCompleteTask(task: Task) {
-                task.isCompleted = !task.isCompleted
                 showToast("Toggle task completion")
+                Log.d("task", task.isCompleted.toString())
             }
         }
 
@@ -116,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         setDialogTitle(dialogTextView, isTaskNull, task)
 
         submitButton.setOnClickListener {
-            val newTask = createNewTask(task, nameInput, descriptionInput, hasDeadlineCheckBox, deadlineEditText, isCompletedCheckBox)
+            val newTask = createNewTask(nameInput, descriptionInput, hasDeadlineCheckBox, deadlineEditText, isCompletedCheckBox)
 
             if (isTaskNull) {
                 addTask(newTask)
@@ -180,7 +181,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createNewTask(
-        task: Task?,
         nameInput: EditText,
         descriptionInput: EditText,
         hasDeadlineCheckBox: CheckBox,
@@ -189,14 +189,13 @@ class MainActivity : AppCompatActivity() {
     ): Task {
         var deadline: LocalDateTime? = null
         if (hasDeadlineCheckBox.isChecked) {
-            val splitDate = deadlineEditText.text.toString().split(".")
-            val parsedDate = object {
-                val day = splitDate[0].toInt()
-                val month = splitDate[1].toInt()
-                val year = splitDate[2].toInt()
-            }
-            deadline = LocalDateTime.of(parsedDate.year, Month.of(parsedDate.month), parsedDate.day, 0, 0)
+            val splitDate = deadlineEditText.text.toString()
+                .split(".")
+                .map { text -> text.toInt() }
+            deadline = LocalDateTime.of(splitDate[2], Month.of(splitDate[1]), splitDate[0], 0, 0)
         }
+
+        val isCompleted = isCompletedCheckBox.isChecked
 
         return Task(
             id = Random.nextInt(),
@@ -204,9 +203,10 @@ class MainActivity : AppCompatActivity() {
             description = descriptionInput.text.toString(),
             hasDeadline = hasDeadlineCheckBox.isChecked,
             deadline = deadline,
-            isCompleted = isCompletedCheckBox.isChecked
+            isCompleted = isCompleted
         )
     }
+
 
     private fun addTask(newTask: Task) {
         tasks.add(newTask)

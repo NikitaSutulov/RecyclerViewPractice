@@ -62,7 +62,7 @@ class TaskAdapter(tasks: MutableList<Task>, private val actionListener: TaskActi
     override fun onClick(v: View?) {
         val task = v?.tag as? Task
         task?.let {
-            when (v?.id) {
+            when (v.id) {
                 R.id.editTaskButton -> {
                     actionListener.onEditTask(it)
                 }
@@ -78,7 +78,7 @@ class TaskAdapter(tasks: MutableList<Task>, private val actionListener: TaskActi
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         val task = buttonView!!.tag as Task
+        task.isCompleted = isChecked
         actionListener.onCompleteTask(task)
-        buttonView.isChecked = task.isCompleted
     }
 }
